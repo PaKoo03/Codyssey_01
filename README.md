@@ -421,10 +421,12 @@ drwxr-xr-x  11 root root 4096 Feb 17 02:09 var
 root@[CONTAINER_ID]:/#
 ```
 -컨테이너 종료/유지(attach/exec 등)의 차이를 스스로 관찰하고 간단히 정리한다.
-attach는 기존에 만들어진 메인 프로세스에 접속합니다. 따라서 attach로 진입 후 나간다면 컨테이너 자체가 꺼지게 됩니다. 이러한 특성으로 인하여 입출력 테스트, 메인 프로세스 로그 확인, 버그 발생 시 로그 등을 확인 하는 디버깅의 용도로 사용하는 것이 좋다고 판단하였습니다.
 
-2. exec (새로운 문 열고 들어가기)
-exec은 실행 중인 컨테이너의 환경 내에 추가적인 프로세스를 인스턴스화하는 작업입니다. 이 프로세스는 메인 프로세스와는 별개의 생명 주기를 가지므로, 해당 프로세스의 Exit 신호가 컨테이너 전체의 중단을 유발하지 않습니다.
+1. attach
+ attach는 기존에 만들어진 메인 프로세스에 접속합니다. 따라서 attach로 진입 후 나간다면 컨테이너 자체가 꺼지게 됩니다. 이러한 특성으로 인하여 입출력 테스트, 메인 프로세스 로그 확인, 버그 발생 시 로그 등을 확인 하는 디버깅의 용도로 사용하는 것이 좋다고 판단하였습니다.
+
+2. exec
+ exec은 실행 중인 컨테이너의 환경 내에 추가적인 프로세스를 인스턴스화하는 작업입니다. 이 프로세스는 메인 프로세스와는 별개의 생명 주기를 가지므로, 해당 프로세스의 Exit 신호가 컨테이너 전체의 중단을 유발하지 않습니다.
 
 ##7 기존 Dockerfile 기반 커스텀 이미지 제작
 
@@ -436,41 +438,40 @@ exec은 실행 중인 컨테이너의 환경 내에 추가적인 프로세스를
  ENV: 컨테이너 내부 환경 변수를 설정하여 서버 정보를 관리함.
  -Dockerfile (사전에 index.html파일 생성 필요)
  ```bash
-FROM nginx:latest  //nginx를 사용한다.
-COPY index.html /usr/share/nginx/html/index.html
-ENV SERVER_NAME="My-Custom-Server"
+FROM nginx:latest
+COPY web/index.html /usr/share/nginx/html/index.html
 ```
 
  -빌드 및 실행 명령 (로그 기록)
  --빌드
  ```bash
- $ docker build -t custom-nginx:1.0 .
-[+] Building 1.0s (7/7) FINISHED                                 docker:desktop-linux
- => [internal] load build definition from Dockerfile                             0.0s
- => => transferring dockerfile: 103B                                             0.0s
- => [internal] load metadata for docker.io/library/nginx:latest                  0.1s
- => [internal] load .dockerignore                                                0.1s
- => => transferring context: 2B                                                  0.0s
- => [internal] load build context                                                0.1s
- => => transferring context: 88B                                                 0.0s
- => [1/2] FROM docker.io/library/nginx:latest@sha256:7150b3a39203cb5bee612ff4a9  0.4s
- => => resolve docker.io/library/nginx:latest@sha256:7150b3a39203cb5bee612ff4a9  0.1s
- => [2/2] COPY web/index.html /usr/share/nginx/html/index.html                   0.0s
- => exporting to image                                                           0.2s
- => => exporting layers                                                          0.1s
- => => exporting manifest sha256:839af9b90da8dc2450cb4a573b44862df94b0ad28b5966  0.0s
- => => exporting config sha256:ddfc03a9b10c86b8cf91d3a998b8fcadc21c12039bf7cbd1  0.0s
- => => exporting attestation manifest sha256:bf37d025acac5a1267900d35edb93a45f6  0.0s
- => => exporting manifest list sha256:445b7aaf46420022128621494732b2afb605297dd  0.0s
- => => naming to docker.io/library/custom-nginx:1.0                              0.0s
- => => unpacking to docker.io/library/custom-nginx:1.0                           0.0s
+$ docker build -t custom-nginx:1.0 .
+[+] Building 0.7s (7/7) FINISHED                           docker:desktop-linux
+ => [internal] load build definition from dockerfile                       0.0s
+ => => transferring dockerfile: 108B                                       0.0s
+ => [internal] load metadata for docker.io/library/nginx:latest            0.0s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [internal] load build context                                          0.1s
+ => => transferring context: 88B                                           0.0s
+ => [1/2] FROM docker.io/library/nginx:latest@sha256:7150b3a39203cb5bee61  0.0s
+ => => resolve docker.io/library/nginx:latest@sha256:7150b3a39203cb5bee61  0.0s
+ => CACHED [2/2] COPY web/index.html /usr/share/nginx/html/index.html      0.0s
+ => exporting to image                                                     0.3s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:839af9b90da8dc2450cb4a573b44862df94b0ad2  0.0s
+ => => exporting config sha256:ddfc03a9b10c86b8cf91d3a998b8fcadc21c12039b  0.0s
+ => => exporting attestation manifest sha256:78d20fd6f2ab9e7a0e6eb57339a8  0.0s
+ => => exporting manifest list sha256:27cbd93367ab96c6133e5f511907a294c2e  0.0s
+ => => naming to docker.io/library/custom-nginx:1.0                        0.0s
+ => => unpacking to docker.io/library/custom-nginx:1.0                     0.0s
  ```
 
  
  --실행
  ```bash
- $ docker run --name con-nginx -d -p 8080:80 custom-nginx:1.0
-b84d53d1421cb8b4e7410de5599601b64f8aa39dddc59e4e149f867040279f1f
+ $ docker run --name con-nginx2 -d -p 8080:80 custom-nginx:1.0
+f4a70c9c4ed441851db561b707c7143f00494d88e6f83e259597a26f4dc4e9c8
 ```
 
 ##8 포트 매핑 및 접속 증거
