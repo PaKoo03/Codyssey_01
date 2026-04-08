@@ -1,0 +1,5 @@
+services:
+  web:
+    image: custom-nginx:1.0
+    ports:
+      - "8080:80"

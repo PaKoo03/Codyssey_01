@@ -1,0 +1,15 @@
+services:
+  web-server:
+    image: custom-nginx:1.0
+    container_name: web-server
+    ports:
+      - "8080:80"
+  OS:
+    image: ubuntu:latest
+    container_name: compose-ubuntu
+    stdin_open: true
+    tty: true
+    volumes:
+      - db-data:/app-data
+volumes:
+  db-data:

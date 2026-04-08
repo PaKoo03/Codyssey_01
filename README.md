@@ -1,11 +1,26 @@
 ## 0. 프로젝트 개요
 -본 프로젝트의 목적은 Docker 가상화 기술과 Git/GitHub 버전 관리 시스템의 통합적인 활용 능력의 습득에 있습니다. 컨테이너 기반의 독립적인 실행 환경 구축을 위해 이미지 커스텀, 볼륨을 이용한 데이터 관리, Docker Compose를 활용한 멀티 컨테이너 실습을 수행합니다. 또한, 환경 변수(.env)를 통한 보안 설정과 SSH 기반의 GitHub 연동을 통해 실무적인 소프트웨어 형상 관리 및 배포 프로세스를 이해하고자 합니다.
 
-## 1. 실행 환경
+## 1. 실행 환경 및 디렉토리 계층 구조
 - OS: Windows 11
 - Shell: Git Bash
 - Docker: 29.3.1 (Docker Desktop) 
 - Git: 2.53.02
+
+--계층구조
+.
+├── Dockerfile              
+├── Dockerfile-1            
+├── docker-compose.yml     
+├── docker-compose-13.yml   
+├── docker-compose-12 copy.yml 
+├── web/                    
+│   └── index.html          
+├── 7.png                  
+├── 15.png                  
+├── README.md              
+├── LICENSE                 
+
 
 ##2 터미널 조작 로그 기록
 -현재 위치확인

@@ -1,0 +1,10 @@
+services:
+  my-nginx:
+    container_name: my-nginx
+    build: .
+    image: custom-nginx:1.0
+    environment:
+      - PORT=${MY_INTERNAL_PORT}  # [내부] 9000 주입
+      - MODE=${APP_MODE}
+    ports:
+      - "${MY_EXTERNAL_PORT}:${MY_INTERNAL_PORT}" # [연결] 8080 -> 9000
