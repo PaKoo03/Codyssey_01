@@ -478,7 +478,7 @@ b84d53d1421cb8b4e7410de5599601b64f8aa39dddc59e4e149f867040279f1f
 $ curl localhost:8080
 <h1>Custom Web</h1>
 ```
-![](./커스텀 웹 스크린샷.png"")
+![](./7.png"")
 
 
 ##9 Docker 볼륨 영속성 검증
@@ -789,7 +789,7 @@ CMD ["sh", "-c", "sed -i 's/listen[[:space:]]*80;/listen '${PORT}';/g' /etc/ngin
 ```
 
 -웹 상황
-![](./15번 컴포즈 웹.png"")
+![](./15.png"")
 
 
 ##16 GitHub SSH 키 설정
